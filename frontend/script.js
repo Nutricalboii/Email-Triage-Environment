@@ -1,140 +1,121 @@
-// Matter.js setup
-const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Events } = Matter;
-
-let engine, render, runner;
-let gravityEnabled = false;
+// state management
 let domBodies = [];
 
-function initPhysics() {
-    engine = Engine.create();
-    engine.world.gravity.y = 0; // Start with no gravity
+// 1. Initialization
+window.onload = () => {
+    setupInteractions();
+    fetchEmail(); // Initial fetch
+};
 
-    const container = document.getElementById('matter-container');
-    render = Render.create({
-        element: container,
-        engine: engine,
-        options: {
-            width: window.innerWidth,
-            height: window.innerHeight,
-            wireframes: false,
-            background: 'transparent'
-        }
+// 2. Interactions (Drag & Drop + Buttons)
+function setupInteractions() {
+    const emailCard = document.getElementById('email-element');
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    emailCard.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', 'email');
+        emailCard.style.opacity = '0.5';
     });
 
-    runner = Runner.create();
-    Render.run(render);
-    Runner.run(runner, engine);
-
-    // Add boundaries (invisible floor and walls)
-    const floor = Bodies.rectangle(window.innerWidth / 2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true });
-    const leftWall = Bodies.rectangle(-50, window.innerHeight / 2, 100, window.innerHeight, { isStatic: true });
-    const rightWall = Bodies.rectangle(window.innerWidth + 50, window.innerHeight / 2, 100, window.innerHeight, { isStatic: true });
-    Composite.add(engine.world, [floor, leftWall, rightWall]);
-
-    // Add mouse control
-    const mouse = Mouse.create(render.canvas);
-    const mouseConstraint = MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: {
-            stiffness: 0.2,
-            render: { visible: false }
-        }
+    emailCard.addEventListener('dragend', () => {
+        emailCard.style.opacity = '1';
+        dropZones.forEach(zone => zone.classList.remove('active'));
     });
-    Composite.add(engine.world, mouseConstraint);
+
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('active');
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('active');
+        });
+
+        zone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            const category = zone.getAttribute('data-category');
+            await performTriage(category);
+        });
+
+        zone.addEventListener('click', async () => {
+            const category = zone.getAttribute('data-category');
+            await performTriage(category);
+        });
+    });
+
+    document.getElementById('reset-btn').onclick = () => fetchEmail();
 }
 
-function createPhysicsBody(elementId) {
-    const el = document.getElementById(elementId);
-    const rect = el.getBoundingClientRect();
-    
-    const body = Bodies.rectangle(
-        rect.left + rect.width / 2,
-        rect.top + rect.height / 2,
-        rect.width,
-        rect.height,
-        {
-            restitution: 0.6,
-            friction: 0.1,
-            isStatic: !gravityEnabled
-        }
-    );
+async function performTriage(category) {
+    const action = {
+        category: category,
+        priority: category === 'urgent' ? 'high' : (category === 'spam' ? 'low' : 'medium'),
+        response: `Manual triage: Moved to ${category}`,
+        antigravity: 0.5
+    };
 
-    domBodies.push({ el, body });
-    Composite.add(engine.world, body);
-}
-
-function updateDOM() {
-    domBodies.forEach(({ el, body }) => {
-        const { x, y } = body.position;
-        el.style.position = 'fixed';
-        el.style.left = '0';
-        el.style.top = '0';
-        el.style.transform = `translate(${x - el.offsetWidth / 2}px, ${y - el.offsetHeight / 2}px) rotate(${body.angle}rad)`;
-    });
-}
-
-function toggleGravity() {
-    gravityEnabled = !gravityEnabled;
-    engine.world.gravity.y = gravityEnabled ? 1 : 0;
-    
-    const container = document.getElementById('matter-container');
-    container.style.pointerEvents = gravityEnabled ? 'auto' : 'none';
-
-    domBodies.forEach(({ body }) => {
-        Matter.Body.setStatic(body, !gravityEnabled);
-    });
-
-    if (gravityEnabled) {
-        document.getElementById('toggle-gravity').innerText = "Disable Antigravity";
-        document.getElementById('toggle-gravity').classList.add('btn-danger');
-        document.getElementById('toggle-gravity').classList.remove('btn-secondary');
-    } else {
-        document.getElementById('toggle-gravity').innerText = "Enable Antigravity";
-        document.getElementById('toggle-gravity').classList.remove('btn-danger');
-        document.getElementById('toggle-gravity').classList.add('btn-secondary');
-        
-        // Reset positions
-        location.reload(); 
+    try {
+        const response = await fetch('/step', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(action)
+        });
+        const result = await response.json();
+        updateUI(result.observation, result.reward, result.info);
+    } catch (err) {
+        console.error("Triage failed:", err);
     }
 }
 
-// API Interaction
+// 3. API & UI Updates
 async function fetchEmail(task = "full") {
+    const btn = document.getElementById('reset-btn');
+    btn.innerHTML = '<span class="spinner"></span> Loading...';
+    btn.disabled = true;
+
     try {
         const response = await fetch(`/reset?task=${task}`);
         const data = await response.json();
-        
-        document.getElementById('email-text').innerText = data.email_text;
-        document.getElementById('sender').innerText = `From: ${data.sender}`;
-        document.getElementById('gravity-display').innerText = `Gravity: ${data.gravity}`;
-        
-        // Add to history
-        const historyList = document.getElementById('history-list');
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerText = `[Session Start] Task: ${task}`;
-        historyList.prepend(item);
-
+        updateUI(data, null, null);
+        addToHistory(`[New Instance] Case #${data.email_id ?? '??'} pulled from dataset (Gravity: ${data.gravity})`);
     } catch (error) {
-        console.error("Failed to fetch email:", error);
+        console.error("Fetch failed:", error);
+    } finally {
+        btn.innerHTML = 'New Email';
+        btn.disabled = false;
     }
 }
 
-// Initialization
-window.onload = () => {
-    initPhysics();
-    createPhysicsBody('email-element');
-    createPhysicsBody('action-element');
+function updateUI(obs, reward, info) {
+    if (obs) {
+        document.getElementById('email-text').innerText = obs.email_text;
+        document.getElementById('sender').innerText = `From: ${obs.sender}`;
+        
+        const gravityBadge = document.getElementById('gravity-display');
+        gravityBadge.innerText = `Gravity Pull: ${obs.gravity}`;
+        
+        // Dynamic color based on gravity
+        const gVal = parseFloat(obs.gravity);
+        if (gVal > 0.7) gravityBadge.style.color = '#ff4d4d';
+        else if (gVal > 0.4) gravityBadge.style.color = '#ffcc00';
+        else gravityBadge.style.color = '#00ffcc';
+    }
     
-    Events.on(engine, 'afterUpdate', updateDOM);
+    if (reward) {
+        document.getElementById('reward-val').innerText = reward.score.toFixed(2);
+        addToHistory(`Triage Reward: ${reward.score.toFixed(2)} | Action: ${reward.contribution}`);
+    }
 
-    document.getElementById('toggle-gravity').onclick = toggleGravity;
-    document.getElementById('reset-btn').onclick = () => fetchEmail();
+    if (info && info.score !== undefined) {
+        document.getElementById('score-val').innerText = info.score.toFixed(2);
+    }
+}
 
-    // Initial fetch
-    fetchEmail();
-};
-
-window.onresize = () => {
-    location.reload(); // Simplest way to handle resize for this physics demo
-};
+function addToHistory(text) {
+    const historyList = document.getElementById('history-list');
+    const item = document.createElement('div');
+    item.className = 'history-item';
+    item.innerText = `> ${text}`;
+    historyList.prepend(item);
+}

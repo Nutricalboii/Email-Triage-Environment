@@ -11,11 +11,12 @@ app = FastAPI(title="OpenEnv Email Triage Assistant")
 env = EmailEnv()
 
 @app.get("/reset")
-def reset(task: str = "full"):
+def reset(task: str = "full", email_id: int = None):
     """
     Resets the environment and returns the initial observation.
+    Supports selecting a specific email ID for testing/demo.
     """
-    obs = env.reset(task=task)
+    obs = env.reset(task=task, email_id=email_id)
     return obs
 
 @app.post("/step")

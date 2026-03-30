@@ -18,7 +18,6 @@
                 <h1>OpenEnv Email Triage</h1>
             </div>
             <div class="controls">
-                <button id="toggle-gravity" class="btn btn-secondary">Toggle Antigravity</button>
                 <button id="reset-btn" class="btn btn-primary">New Email</button>
             </div>
         </header>
@@ -26,13 +25,27 @@
         <main>
             <div class="card-grid">
                 <!-- Email Content Card -->
-                <div class="card email-card" id="email-element">
+                <div class="card email-card" id="email-element" draggable="true">
                     <div class="card-header">
                         <span class="sender-tag" id="sender">Loading...</span>
                         <span class="gravity-badge" id="gravity-display">Gravity: 0.0</span>
                     </div>
                     <div class="card-body">
                         <p id="email-text">Select "New Email" to start the triage session.</p>
+                    </div>
+                    <div class="drop-zones">
+                        <div class="drop-zone" id="drop-normal" data-category="normal">
+                            <span class="icon">📥</span>
+                            <p>Normal</p>
+                        </div>
+                        <div class="drop-zone" id="drop-urgent" data-category="urgent">
+                            <span class="icon">🚨</span>
+                            <p>Urgent</p>
+                        </div>
+                        <div class="drop-zone" id="drop-spam" data-category="spam">
+                            <span class="icon">🚫</span>
+                            <p>Spam</p>
+                        </div>
                     </div>
                 </div>
 
@@ -60,7 +73,7 @@
             </div>
         </main>
 
-        <div id="matter-container"></div>
+        <!-- matter-container removed to fix button interaction issues -->
     </div>
 
     <script src="/static/script.js"></script>

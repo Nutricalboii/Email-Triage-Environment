@@ -19,6 +19,10 @@ COPY main.py .
 COPY openenv.yaml .
 COPY README.md .
 COPY inference.py .
+COPY demo.py .
+COPY architecture.md .
+COPY validate_env.py .
+COPY pitch_script.md .
 
 # Expose the API port
 EXPOSE 7860

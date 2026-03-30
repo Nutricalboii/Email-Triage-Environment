@@ -5,6 +5,7 @@ class Observation(BaseModel):
     email_text: str
     sender: str
     gravity: float  # Urgency score (0.0 - 1.0)
+    email_id: Optional[int] = None
     history: List[str] = []
 
 class Action(BaseModel):

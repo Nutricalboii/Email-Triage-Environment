@@ -1,68 +1,121 @@
 # OpenEnv Email Triage Assistant (with Antigravity UI) 📧
+### A Deterministic, Adversarial Evaluation System for Intelligent Agents
 
-An industrial-grade, OpenEnv-compliant reinforcement learning environment for training and evaluating AI agents on real-world email triage tasks.
+---
 
-## 🚀 Overview
+## ⚡ TL;DR (Read This First)
+This project is a fully compliant OpenEnv environment that evaluates an agent’s ability to manage real-world email workflows. 
 
-This environment simulates a professional inbox where an AI agent must handle incoming communications by classifying them, assigning priority, and generating appropriate responses. 
+It is:
+- ✅ **Deterministic**: Reproducible scoring (0.0–1.0) guaranteed.
+- ✅ **Multi-step**: Evaluates behavior over sequential decisions, not just single-shot responses.
+- ✅ **Adversarial**: Specifically designed to break weak agents through deceptive signals.
+- ✅ **Exploit-resistant**: Programmatically prevents trivial strategies like keyword stuffing.
+- ✅ **Fully Deployable**: One-command Docker + Hugging Face Space integration.
 
-### ✨ The Antigravity Twist
-Inspired by **Google Gravity**, the built-in dashboard features a physics-based "Falling UI" mode. It serves as a visual metaphor for the chaos of an unmanaged inbox—where urgency (gravity) pulls tasks down if not countered by strategic agent decisions (antigravity).
+---
 
-## 🛠️ Environment Specification (OpenEnv)
+## 🚀 Why This Exists
+Most environments test if an agent can produce *an* answer. This environment tests whether an agent can be **trusted** to manage a real professional inbox. 
 
-- **Observation Space**: Typed Pydantic models including `email_text`, `sender`, `gravity` (urgency), and `history`.
-- **Action Space**: Enum-based categories (`spam`, `urgent`, `normal`), priorities (`low`, `medium`, `high`), and a `response` string.
-- **Reward Function**: Programmatic scoring with partial rewards for correct classification, keyword matching, and strategic delay management.
+It evaluates whether an agent can:
+1. Act correctly under professional ambiguity.
+2. Maintain consistency across a high-volume session.
+3. Resist misleading adversarial signals (e.g., "fake urgency").
+4. Manage strategic priorities via the internal `antigravity` mechanic.
 
-### 🎮 Tasks & Difficulty
-| Task ID | Level | Description |
-|---------|-------|-------------|
-| `classification` | Easy | Correctly identify the email category. |
-| `priority` | Medium | Correctly assign priority levels to categorized emails. |
-| `full` | Hard | Handle the entire triage workflow, including response generation and strategic `antigravity` balancing. |
+### 🔄 Environment Architecture
+```mermaid
+graph TD
+    A[Start Reset] --> B[Reset Env / Get email_id]
+    B --> C[Observation: email_text, gravity]
+    C --> D[Agent Decision: cat, priority, resp, antigrav]
+    D --> E[Grader: Correctness + Trap Checks]
+    E --> F[Reward Calculation: Score - Efficiency Penalty]
+    F --> G{Episode Done?}
+    G -- No --> H[Increment Step / Next Email]
+    H --> C
+    G -- Yes --> I[Final Score + Leaderboard]
+```
+
+---
+
+## 🎮 Tasks & Capability
+| Task | Level | Capability Tested |
+|------|-------|-------------------|
+| `classification` | Easy | Basic intent and category understanding. |
+| `priority` | Medium | Alignment of decision-making with urgency signals. |
+| `full` | Hard | End-to-end reasoning, response generation, and strategic delay. |
+
+---
+
+## 🧮 Evaluation & Adversarial Design
+
+### 1. Deterministic Grading
+Every agent action is scored using a fixed, rules-based logic in `app/grader.py`. This ensures that every test run is 100% reproducible and fair.
+
+### 2. Adversarial Traps (The "Wow" Factor)
+The environment includes 3 high-impact adversarial cases that specifically target agent weaknesses:
+- **Trap 1: Fake Urgency**: A normal email (lunch invite) using "URGENT" keywords to trick keyword-reliant agents.
+- **Trap 2: Polite Crisis**: A critical server failure described in a calm, professional tone without urgent keywords.
+- **Trap 3: Legitimate Phish**: Sophisticated spam mimicking standard security alerts to test over-prioritization.
+
+### 3. Antigravity Dynamic
+Agents must set an `antigravity` value (0.0-1.0). High gravity emails (urgent) require low antigravity (immediate action). Low gravity emails (spam) allow high antigravity (strategic delay).
+
+---
+
+## ✨ Antigravity UI (Visual Chaos)
+Inspired by **Google Gravity**, the built-in dashboard features a physics-based "Falling UI" mode. It is a visual metaphor for the chaos of an unmanaged inbox. 
+- **Toggle Antigravity**: Watch the dashboard succumb to or resist "inbox gravity" in real-time.
+- **Matter.js Physics**: High-fidelity physics simulation of UI components.
+
+---
 
 ## 📦 Getting Started
 
-### Prerequisites
-- Docker
-- Python 3.10+
-- OpenAI API Key (for baseline inference)
-
-### Local Development
+### Local Setup (Recommended)
+The project includes a one-click launcher that handles virtual environment creation and dependency management automatically.
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Clone and enter the directory
+cd "Email Triage Environment"
 
-# Start the environment
-python main.py
+# Give execution permissions and run the launcher
+chmod +x run.sh
+./run.sh
 ```
 Access the dashboard at `http://localhost:7860`.
 
-### Docker Deployment
+### 🧪 Run the Adversarial Demo
+To see how a frontier model (like GPT-4o) handles the adversarial traps:
 ```bash
-# Build the image
-docker build -t email-env .
+# Use your virtual environment
+source venv/bin/activate
 
-# Run the container
+export OPENAI_API_KEY="your-key-here"
+python demo.py
+```
+
+### 🐳 Docker Deployment
+```bash
+docker build -t email-env .
 docker run -p 7860:7860 email-env
 ```
 
-## 🤖 Baseline Inference
-The included `inference.py` script provides a reproducible baseline score.
-
-```bash
-export OPENAI_API_KEY="your-key-here"
-export MODEL_NAME="gpt-4o"
-python inference.py
-```
+---
 
 ## 📂 Project Structure
 - `app/`: Core logic (models, env, grader, data).
-- `frontend/`: Dashboard UI (HTML, CSS, JS with Matter.js).
+- `frontend/`: Dashboard UI with Matter.js physics.
 - `main.py`: FastAPI server entrypoint.
-- `openenv.yaml`: OpenEnv metadata.
+- `openenv.yaml`: OpenEnv metadata specification.
 - `inference.py`: Baseline agent script.
+- `demo.py`: Adversarial showcase script.
 
 ---
-Built for the **OpenEnv Round 1 Hackathon**.
+
+## 👥 Team Singularity
+**Vaibhav Sharma** | **Anushka R** | **Devesh Khurana**
+
+> [!IMPORTANT]
+> This project is not built to showcase an AI agent. It is built to answer a harder question: **Can an AI agent be trusted to make correct decisions under real-world pressure and noise?**
