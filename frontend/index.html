@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Triage Assistant - OpenEnv</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <div class="logo">
+                <span class="icon">📧</span>
+                <h1>OpenEnv Email Triage</h1>
+            </div>
+            <div class="controls">
+                <button id="toggle-gravity" class="btn btn-secondary">Toggle Antigravity</button>
+                <button id="reset-btn" class="btn btn-primary">New Email</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="card-grid">
+                <!-- Email Content Card -->
+                <div class="card email-card" id="email-element">
+                    <div class="card-header">
+                        <span class="sender-tag" id="sender">Loading...</span>
+                        <span class="gravity-badge" id="gravity-display">Gravity: 0.0</span>
+                    </div>
+                    <div class="card-body">
+                        <p id="email-text">Select "New Email" to start the triage session.</p>
+                    </div>
+                </div>
+
+                <!-- Triage Control Card -->
+                <div class="card action-card" id="action-element">
+                    <h2>Agent Triage Control</h2>
+                    <div class="status-indicator">
+                        <span id="task-status">Live Session</span>
+                        <span class="dot"></span>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric">
+                            <label>Reward</label>
+                            <span id="reward-val">0.0</span>
+                        </div>
+                        <div class="metric">
+                            <label>Score</label>
+                            <span id="score-val">0.0</span>
+                        </div>
+                    </div>
+                    <div class="history" id="history-list">
+                        <!-- Agent responses appear here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="matter-container"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

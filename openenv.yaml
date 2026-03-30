@@ -1,0 +1,32 @@
+name: email-triage-env
+description: A real-world email triage environment for AI agents.
+version: 1.0.0
+entrypoint: main:app
+runtime: docker
+license: MIT
+
+tasks:
+  - id: classification
+    name: Email Classification
+    description: Correctly classify an email as spam, urgent, or normal.
+    difficulty: easy
+  - id: priority
+    name: Priority Assignment
+    description: Classify and assign the correct priority level (low, medium, high).
+    difficulty: medium
+  - id: full
+    name: Full Email Triage
+    description: Classify, prioritize, and respond with relevant keywords while managing strategic delay (antigravity).
+    difficulty: hard
+
+observation_space:
+  email_text: string
+  sender: string
+  gravity: float (0.0-1.0)
+  history: list[string]
+
+action_space:
+  category: enum (spam, urgent, normal)
+  priority: enum (low, medium, high)
+  response: string
+  antigravity: float (0.0-1.0)
