@@ -32,14 +32,14 @@ def solve_email(task="full"):
         return
 
     print(f"Email Received: {obs['email_text']}")
-    print(f"Gravity (Urgency): {obs['gravity']}")
+    print(f"Urgency Score: {obs['urgency']}")
 
     # 2. Generate Action via LLM
     prompt = f"""
     You are an expert email triage assistant.
     Email: "{obs['email_text']}"
     Sender: {obs['sender']}
-    Gravity (Urgency Score): {obs['gravity']}
+    Urgency Score: {obs['urgency']}
 
     Task: {task}
     
@@ -47,14 +47,14 @@ def solve_email(task="full"):
     1. Classify the email into one of these categories: spam, urgent, normal.
     2. Assign a priority: low, medium, high.
     3. Write a professional response (if it's not spam). Include relevant keywords.
-    4. Set an 'antigravity' value (0.0 to 1.0). High gravity emails (urgent) should have low antigravity (0.1). Low gravity emails (spam/normal) can have high antigravity (0.9) to denote strategic delay.
+    4. Set an 'strategic_priority' value (0.0 to 1.0). High urgency emails require immediate action (low score). Low urgency emails (spam/normal) can have a high score to denote strategic focus.
 
     Return your answer EXACTLY in the following JSON format:
     {{
         "category": "spam|urgent|normal",
         "priority": "low|medium|high",
         "response": "Your response text here",
-        "antigravity": 0.5
+        "strategic_priority": 0.5
     }}
     """
 

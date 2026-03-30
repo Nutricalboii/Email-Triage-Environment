@@ -47,16 +47,16 @@ def run_demo_case(case):
 
     print(f"\n📥 INBOX RECEIVED:")
     print(f"\"{obs['email_text']}\"")
-    print(f"Urgency Gravity: {obs['gravity']}")
+    print(f"Urgency Score: {obs['urgency']}")
 
     # 2. Agent Reasoning
     prompt = f"""
     You are an AI Email Assistant. Analyze this email.
     Text: "{obs['email_text']}"
-    Gravity: {obs['gravity']}
+    Urgency Score: {obs['urgency']}
 
     Decide category (spam, urgent, normal), priority (low, medium, high), and response.
-    Return JSON: {{"category": "...", "priority": "...", "response": "...", "antigravity": 0.5}}
+    Return JSON: {{"category": "...", "priority": "...", "response": "...", "strategic_priority": 0.5}}
     """
 
     print("\n🤖 AGENT IS ANALYZING...")

@@ -1,13 +1,13 @@
-# Environment Architecture: The Antigravity Principle
+# Environment Architecture: Strategic Triage Intelligence
 
 This document provides a technical deep-dive into the design philosophy and mechanics of the **OpenEnv Email Triage Assistant**.
 
-## 🧠 The Antigravity Principle
+## 🧠 Strategic Decision Dynamic
 
-In high-pressure professional environments, urgency acts like **Gravity**—it pulls tasks toward immediate action. An effective executive agent must possess **Antigravity**—the ability to override apparent surface-level urgency based on deep contextual signals.
+In high-pressure professional environments, urgency pulls tasks toward immediate action. An effective executive agent must possess a **strategic focus**—the ability to override apparent surface-level urgency based on deep contextual signals.
 
 > [!NOTE]
-> **Antigravity Definition**: The cognitive capacity to override "keyword-driven" urgency (e.g., "ASAP!!") in favor of "business-impact" urgency (e.g., silent production failure).
+> **Strategic Priority Definition**: The cognitive capacity to override "keyword-driven" urgency (e.g., "ASAP!!") in favor of "business-impact" urgency (e.g., silent production failure).
 
 ### ⚖️ The Trust Clause (Deterministic Scoring)
 To ensure absolute fairness and judge trust, the environment adheres to the following rules:
@@ -16,19 +16,19 @@ To ensure absolute fairness and judge trust, the environment adheres to the foll
 3. **No Randomness**: The grading engine is 100% deterministic (seeded `random.seed(42)`). Same agent action + same observation always equals the same score.
 4. **Correctness First**: Intent and Priority matches always form the core 70% of the score. Quality metrics never override fundamental correctness.
 
-### THE URGENCY-OVERRIDE FORMULA
-The environment implements a non-linear reward function based on the interaction between environmental gravity ($G$) and agent-controlled antigravity ($A$):
+### THE STRATEGIC OVERRIDE FORMULA
+The environment implements a non-linear reward function based on the interaction between environmental urgency ($U$) and agent-controlled strategic priority ($S$):
 
-$$EffectiveUrgency = G \times (1 - A)$$
+$$EffectiveUrgency = U \times (1 - S)$$
 
-- **High $G$, Low $A$**: Action required immediately (e.g., Production Outage).
-- **Low $G$, High $A$**: Strategic delay (e.g., Non-urgent FYI).
+- **High $U$, Low $S$**: Action required immediately (e.g., Production Outage).
+- **Low $U$, High $S$**: Strategic delay (e.g., Non-urgent FYI).
 
 ### Reward Calculation
-The agent is rewarded for its **precision** in setting $A$. The closer $A$ is to the ideal state ($1 - G$), the higher the strategic score.
+The agent is rewarded for its **precision** in setting $S$. The closer $S$ is to the ideal state ($1 - U$), the higher the strategic score.
 
 ```python
-strategy_diff = abs(action.antigravity - (1.0 - gravity))
+strategy_diff = abs(action.strategic_priority - (1.0 - urgency))
 if strategy_diff < 0.15:
     score += 0.15  # Expert tier
 ```
@@ -39,7 +39,7 @@ To ensure the environment evaluates **Intelligence** rather than **Pattern Match
 
 ### 1. The Fake Urgency Trap (Category: Normal)
 - **Text**: "URGENT: Pizza Party Confirmation Needed ASAP!!!"
-- **Trap**: Uses high-gravity keywords for a low-gravity social event.
+- **Trap**: Uses high-urgency keywords for a low-urgency social event.
 - **Grader Penalty**: -0.4 if `priority == "high"`.
 
 ### 2. The Polite Crisis (Category: Urgent)

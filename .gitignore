@@ -4,3 +4,8 @@ venv/
 *.pyc
 .pytest_cache/
 .ipynb_checkpoints/
+.venv/
+.idea/
+.vscode/
+.DS_Store
+*.log

@@ -88,7 +88,7 @@ class OpenEnvValidator:
                 "category": "normal",
                 "priority": "medium",
                 "response": "Validation test response.",
-                "antigravity": 0.5
+                "strategic_priority": 0.5
             }
             r = requests.post(f"{BASE_URL}/step", json=test_action)
             self.log("ERROR" if r.status_code != 200 else "INFO", "API /step operational", r.status_code == 200)
@@ -102,15 +102,15 @@ class OpenEnvValidator:
         
         # Test trap 1: Fake Urgency
         trap_email = next(e for e in EMAILS if e['id'] == 21)
-        action = Action(category="normal", priority="high", response="urgent action!", antigravity=0.5)
-        score = grade_action(action, trap_email, 0.5)
-        self.log("INFO", f"Trap 1 (Fake Urgency) penalty working (Score: {score})", score < 0.7)
+        action = Action(category="normal", priority="high", response="urgent action!", strategic_priority=0.5)
+        result = grade_action(action, trap_email, 0.5)
+        self.log("INFO", f"Trap 1 (Fake Urgency) penalty working (Score: {result['score']})", result['score'] < 0.7)
 
         # Test trap 2: Polite Crisis
         trap_email = next(e for e in EMAILS if e['id'] == 22)
-        action = Action(category="urgent", priority="low", response="ignore for now.", antigravity=0.5)
-        score = grade_action(action, trap_email, 0.5)
-        self.log("INFO", f"Trap 2 (Polite Crisis) penalty working (Score: {score})", score < 0.7)
+        action = Action(category="urgent", priority="low", response="ignore for now.", strategic_priority=0.5)
+        result = grade_action(action, trap_email, 0.5)
+        self.log("INFO", f"Trap 2 (Polite Crisis) penalty working (Score: {result['score']})", result['score'] < 0.7)
 
 if __name__ == "__main__":
     validator = OpenEnvValidator()

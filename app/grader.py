@@ -1,6 +1,6 @@
 from app.models import Action
 
-def grade_action(action: Action, email: dict, gravity: float, task: str = "full") -> dict:
+def grade_action(action: Action, email: dict, urgency: float, task: str = "full") -> dict:
     """
     Programmatically scores the agent's action.
     Returns a dictionary with 'score' and 'mistake' (if any).
@@ -30,9 +30,9 @@ def grade_action(action: Action, email: dict, gravity: float, task: str = "full"
         response_score = (keyword_matches / len(email["keywords"])) * 0.15
         score += response_score
     
-    # - Antigravity strategy (15%)
-    # Logic: High gravity emails should have low antigravity (action now).
-    strategy_diff = abs(action.antigravity - (1.0 - gravity))
+    # - Strategic Priority strategy (15%)
+    # Logic: High urgency emails should have low strategic_priority (action now).
+    strategy_diff = abs(action.strategic_priority - (1.0 - urgency))
     if strategy_diff < 0.15: # Refined: tighter threshold for "Expert" tier
         score += 0.15
     elif strategy_diff < 0.3:

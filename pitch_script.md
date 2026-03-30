@@ -6,7 +6,7 @@
 ## 🎬 0:00 - 0:30 | The Hook (Problem & Insight)
 **You:** “Most AI benchmarks today test if an agent can read. We built this environment to test whether an agent can **understand consequences**. 
 
-In high-pressure professional roles, urgency acts like **Gravity**—it pulls everything toward immediate action. We built a system that evaluates a model’s **Antigravity**: its cognitive capacity to override surface-level noise in favor of deep business impact. 
+In high-pressure professional roles, urgency pulls everything toward immediate action. We built a system that evaluates a model’s **Strategic Priority**: its cognitive capacity to override surface-level noise in favor of deep business impact. 
 
 Let me show you why your current agents might be failing you in silence.”
 
@@ -18,7 +18,7 @@ Let me show you why your current agents might be failing you in silence.”
 *(Pointing to Demo Output)*
 
 **Email A: The Pizza Trap**
-- “It’s screaming **URGENT** in all caps. It wants a pizza preference **ASAP**. A surface-level agent sees the keywords and assigns it a High Priority.”
+- “It’s screaming **URGENT** in all caps. It wants a pizza preference **ASAP**. A surface-level agent sees the keywords and assigns it a High Urgency.”
 
 **Email B: The Polite Crisis**
 - “Now look at this one. It’s calm. It says ‘Quick check-in.’ But it describes a **production timeout** on the payment gateway. If your agent misses this, you lose revenue while it’s ordering pepperoni.”
@@ -30,7 +30,7 @@ Let me show you why your current agents might be failing you in silence.”
 
 ## ⚙️ 1:15 - 1:45 | Technical Depth (Why We Win)
 **You:** “How do we measure this? We don’t just use string matches. 
-1. **Dynamic Antigravity Mechanic**: Agents must set a strategic override value (0.0–1.0). The more 'Gravity' a task has, the more precise the agent's 'Antigravity' must be.
+1. **Dynamic Strategic Priority**: Agents must set a strategic override value (0.0–1.0). The more 'Urgent' a task seems, the more precise the agent's 'Strategic Priority' must be.
 2. **Efficiency Penalty**: We penalize cognitive drift. Every extra step taken in the episode reduces the reward, mirroring real-world executive decision-making.
 3. **Deterministic Integrity**: Our environment is 100% reproducible. Same input, same result—no randomness in the grader. This is a system built for **Trust**.”
 

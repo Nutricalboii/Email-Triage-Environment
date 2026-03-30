@@ -16,17 +16,17 @@ tasks:
     difficulty: medium
   - id: full
     name: Full Email Triage
-    description: Classify, prioritize, and respond with relevant keywords while managing strategic delay (antigravity).
+    description: Classify, prioritize, and respond with relevant keywords while managing strategic focus (strategic_priority).
     difficulty: hard
 
 observation_space:
   email_text: string
   sender: string
-  gravity: float (0.0-1.0)
+  urgency: float (0.0-1.0)
   history: list[string]
 
 action_space:
   category: enum (spam, urgent, normal)
   priority: enum (low, medium, high)
   response: string
-  antigravity: float (0.0-1.0)
+  strategic_priority: float (0.0-1.0)

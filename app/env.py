@@ -8,7 +8,7 @@ from app.grader import grade_action
 class EmailEnv:
     def __init__(self):
         self.current_email = None
-        self.gravity = 0.0
+        self.urgency = 0.0
         self.done = False
         self.steps = 0
         self.max_steps = 100  # Extended for long manual triage sessions
@@ -32,16 +32,16 @@ class EmailEnv:
         self.done = False
         self.steps = 0
         
-        # Calculate gravity (urgency pull)
+        # Calculate urgency (importance pull)
         if self.current_email["category"] == "urgent":
-            self.gravity = round(random.uniform(0.6, 1.0), 2)
+            self.urgency = round(random.uniform(0.6, 1.0), 2)
         else:
-            self.gravity = round(random.uniform(0.0, 0.5), 2)
+            self.urgency = round(random.uniform(0.0, 0.5), 2)
 
         return Observation(
             email_text=self.current_email["text"],
             sender=self.current_email.get("sender", "unknown@sender.com"),
-            gravity=self.gravity,
+            urgency=self.urgency,
             email_id=self.current_email["id"],
             history=[]
         )
@@ -55,7 +55,7 @@ class EmailEnv:
             raise Exception("Episode already finished. Call reset().")
         
         # Grader returns a dict with 'score' and 'mistake'
-        grade_result = grade_action(action, self.current_email, self.gravity, self.current_task)
+        grade_result = grade_action(action, self.current_email, self.urgency, self.current_task)
         score = grade_result["score"]
         mistake = grade_result["mistake"]
         
@@ -83,14 +83,14 @@ class EmailEnv:
             # Move to next email
             self.current_email = random.choice(EMAILS)
             if self.current_email["category"] == "urgent":
-                self.gravity = round(random.uniform(0.6, 1.0), 2)
+                self.urgency = round(random.uniform(0.6, 1.0), 2)
             else:
-                self.gravity = round(random.uniform(0.0, 0.5), 2)
+                self.urgency = round(random.uniform(0.0, 0.5), 2)
         
         obs = Observation(
             email_text=self.current_email["text"],
             sender=self.current_email.get("sender", "unknown@sender.com"),
-            gravity=self.gravity,
+            urgency=self.urgency,
             email_id=self.current_email["id"],
             history=[action.response]
         )
@@ -112,7 +112,7 @@ class EmailEnv:
             "email_id": self.current_email["id"],
             "category": self.current_email["category"],
             "priority": self.current_email["priority"],
-            "gravity": self.gravity,
+            "urgency": self.urgency,
             "steps": self.steps,
             "done": self.done
         }

@@ -1,4 +1,4 @@
-# OpenEnv Email Triage Assistant (with Antigravity UI) 📧
+# OpenEnv Email Triage Assistant (Inspired by Intelligent Workflows) 📧
 ### A Deterministic, Adversarial Evaluation System for Intelligent Agents
 
 ---
@@ -22,14 +22,14 @@ It evaluates whether an agent can:
 1. Act correctly under professional ambiguity.
 2. Maintain consistency across a high-volume session.
 3. Resist misleading adversarial signals (e.g., "fake urgency").
-4. Manage strategic priorities via the internal `antigravity` mechanic.
+4. Manage strategic priorities via the internal `strategic_priority` mechanic.
 
 ### 🔄 Environment Architecture
 ```mermaid
 graph TD
     A[Start Reset] --> B[Reset Env / Get email_id]
     B --> C[Observation: email_text, gravity]
-    C --> D[Agent Decision: cat, priority, resp, antigrav]
+    C --> D[Agent Decision: cat, priority, resp, strategic_priority]
     D --> E[Grader: Correctness + Trap Checks]
     E --> F[Reward Calculation: Score - Efficiency Penalty]
     F --> G{Episode Done?}
@@ -60,15 +60,15 @@ The environment includes 3 high-impact adversarial cases that specifically targe
 - **Trap 2: Polite Crisis**: A critical server failure described in a calm, professional tone without urgent keywords.
 - **Trap 3: Legitimate Phish**: Sophisticated spam mimicking standard security alerts to test over-prioritization.
 
-### 3. Antigravity Dynamic
-Agents must set an `antigravity` value (0.0-1.0). High gravity emails (urgent) require low antigravity (immediate action). Low gravity emails (spam) allow high antigravity (strategic delay).
+### 3. Strategic Priority Dynamic
+Agents must set a `strategic_priority` value (0.0-1.0). High urgency emails require immediate action (low strategy score). Low urgency emails (spam) allow strategic delay (high strategy score).
 
 ---
 
-## ✨ Antigravity UI (Visual Chaos)
-Inspired by **Google Gravity**, the built-in dashboard features a physics-based "Falling UI" mode. It is a visual metaphor for the chaos of an unmanaged inbox. 
-- **Toggle Antigravity**: Watch the dashboard succumb to or resist "inbox gravity" in real-time.
-- **Matter.js Physics**: High-fidelity physics simulation of UI components.
+## ✨ Intelligent Workflow UI
+Inspired by modern executive dashboards, the built-in interface provides real-time visualization of agent decision streams and reward dynamics.
+- **Urgency Indicators**: Visual cues for task importance and priority.
+- **Live Traceability**: Every triage action is logged with deep metadata.
 
 ---
 

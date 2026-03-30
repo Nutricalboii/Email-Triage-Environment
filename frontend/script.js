@@ -52,7 +52,7 @@ async function performTriage(category) {
         category: category,
         priority: category === 'urgent' ? 'high' : (category === 'spam' ? 'low' : 'medium'),
         response: `Manual triage: Moved to ${category}`,
-        antigravity: 0.5
+        strategic_priority: 0.5
     };
 
     try {
@@ -78,7 +78,7 @@ async function fetchEmail(task = "full") {
         const response = await fetch(`/reset?task=${task}`);
         const data = await response.json();
         updateUI(data, null, null);
-        addToHistory(`[New Instance] Case #${data.email_id ?? '??'} pulled from dataset (Gravity: ${data.gravity})`);
+        addToHistory(`[New Instance] Case #${data.email_id ?? '??'} pulled from dataset (Urgency: ${data.urgency})`);
     } catch (error) {
         console.error("Fetch failed:", error);
     } finally {
@@ -93,10 +93,10 @@ function updateUI(obs, reward, info) {
         document.getElementById('sender').innerText = `From: ${obs.sender}`;
         
         const gravityBadge = document.getElementById('gravity-display');
-        gravityBadge.innerText = `Gravity Pull: ${obs.gravity}`;
+        gravityBadge.innerText = `Urgency: ${obs.urgency}`;
         
-        // Dynamic color based on gravity
-        const gVal = parseFloat(obs.gravity);
+        // Dynamic color based on urgency
+        const gVal = parseFloat(obs.urgency);
         if (gVal > 0.7) gravityBadge.style.color = '#ff4d4d';
         else if (gVal > 0.4) gravityBadge.style.color = '#ffcc00';
         else gravityBadge.style.color = '#00ffcc';
